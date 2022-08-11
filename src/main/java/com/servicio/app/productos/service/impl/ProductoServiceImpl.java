@@ -39,7 +39,7 @@ public class ProductoServiceImpl implements ProductoService {
     @Override
     public Optional<ProductoDTO> obtenerProducto(String productoId) {
         Optional<Producto> p = this.productoDAO.findById(productoId);
-        ProductoDTO dto = p.isPresent() ? this.productoMapper.toDTO(p.get()) : null;
+        ProductoDTO dto = p.map(this.productoMapper::toDTO).orElse(null);
 
         return Optional.ofNullable(dto);
     }

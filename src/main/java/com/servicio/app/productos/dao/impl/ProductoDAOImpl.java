@@ -54,13 +54,11 @@ public class ProductoDAOImpl implements ProductoDAOCustom {
                 if (marca.isPresent()) {
                     String m = marca.get();
 
-                    criteria = (nombre.isPresent() ?
-                            where("familia").is(f).andOperator(where("marca").is(m)).andOperator(where("nombre").is(nombre.get())) :
-                            where("familia").is(f));
+                    criteria = (nombre.map(s -> where("familia").is(f).andOperator(where("marca").is(m)).
+                            andOperator(where("nombre").is(s))).orElseGet(() -> where("familia").is(f)));
                 } else {
-                    criteria = (nombre.isPresent() ?
-                            where("familia").is(f).andOperator(where("nombre").is(nombre.get())) :
-                            where("familia").is(f));
+                    criteria = (nombre.map(s -> where("familia").is(f).andOperator(where("nombre").is(s))).
+                            orElseGet(() -> where("familia").is(f)));
                 }
             } catch (Exception e) {
                 throw new IllegalStateException("Familia de producto inválida", e);
@@ -69,9 +67,8 @@ public class ProductoDAOImpl implements ProductoDAOCustom {
             try {
                 String m = marca.get();
 
-                criteria = (nombre.isPresent() ?
-                        where("marca").is(m).andOperator(where("nombre").is(nombre.get())) :
-                        where("marca").is(m));
+                criteria = (nombre.map(s -> where("marca").is(m).andOperator(where("nombre").is(s))).
+                        orElseGet(() -> where("marca").is(m)));
             } catch (Exception e) {
                 throw new IllegalStateException("Marca de producto inválida", e);
             }
